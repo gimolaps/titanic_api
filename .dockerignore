@@ -1,0 +1,9 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+notebooks
+data
+streamlit_app.py
+README.md
