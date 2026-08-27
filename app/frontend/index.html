@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titanic Survival Predictor</title>
+    <link rel="stylesheet" href="/frontend/style.css">
+</head>
+
+<body>
+    <main class="page">
+        <section class="hero">
+            <div class="badge">Machine Learning API Demo</div>
+            <h1>Titanic Survival Predictor</h1>
+            <p>
+                Select passenger parameters and get a survival prediction from a trained Random Forest model.
+            </p>
+        </section>
+
+        <section class="card">
+            <div class="card-header">
+                <div>
+                    <h2>Passenger Data</h2>
+                    <p>Fill the form and run model inference.</p>
+                </div>
+                <div class="status-pill">Live API</div>
+            </div>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label for="age">Age</label>
+                    <input id="age" type="number" value="25" min="0" step="1">
+                </div>
+
+                <div class="field">
+                    <label for="fare">Fare</label>
+                    <input id="fare" type="number" value="20" min="0" step="0.1">
+                </div>
+
+                <div class="field">
+                    <label for="embarked">Embarked</label>
+                    <select id="embarked">
+                        <option value="S">Southampton</option>
+                        <option value="C">Cherbourg</option>
+                        <option value="Q">Queenstown</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="sex">Sex</label>
+                    <select id="sex">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="pclass">Passenger Class</label>
+                    <select id="pclass">
+                        <option value="1">1st class</option>
+                        <option value="2">2nd class</option>
+                        <option value="3" selected>3rd class</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="familySize">Family Size</label>
+                    <input id="familySize" type="number" value="1" min="0" step="1">
+                </div>
+            </div>
+
+            <div class="checkbox-row">
+                <input id="isAlone" type="checkbox" checked>
+                <label for="isAlone">Passenger is alone</label>
+            </div>
+
+            <button onclick="predict()">Run Prediction</button>
+
+            <div id="result" class="result"></div>
+
+            <div class="links">
+                <a href="/docs">API Docs</a>
+                <a href="/health">Health Check</a>
+                <a href="/stats">Stats</a>
+            </div>
+        </section>
+    </main>
+
+    <script src="/frontend/script.js"></script>
+</body>
+
+</html>
