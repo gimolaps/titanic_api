@@ -1,14 +1,188 @@
 # Titanic Survival Prediction API
 
-A small machine learning project that predicts whether a Titanic passenger would survive based on passenger information.
+A Dockerized FastAPI machine learning service for Titanic passenger survival prediction.
 
-The project includes:
+The project uses a trained Random Forest model to predict whether a passenger would survive based on passenger attributes such as age, fare, sex, passenger class, embarkation port, family size and solo-travel status.
 
-* a trained **Random Forest** classification model;
-* a **FastAPI** backend for model inference;
-* a simple **Streamlit** web interface;
-* Docker support;
-* a structured project architecture separating API routes, schemas, and prediction logic.
+The application includes:
+
+- REST API for model inference
+- Web frontend for manual prediction
+- Docker setup
+- Cloud deployment support
+- Clean backend structure with routers and services
+
+---
+
+## Project Overview
+
+This project demonstrates a complete machine learning application workflow:
+
+```text
+dataset → preprocessing → trained model → API → frontend → Docker → cloud deployment
+```
+
+The main goal is not only to train a model, but to show how a machine learning model can be served as a usable web application.
+
+The project is suitable as a portfolio example for:
+
+- AI Engineer Intern
+- ML Engineer Intern
+- Junior AI Developer
+- Junior Python Backend Developer with ML/AI focus
+
+---
+
+## Live Demo
+
+Web app:
+
+```text
+https://titanic-api-eqep.onrender.com/
+```
+
+API documentation:
+
+```text
+https://titanic-api-eqep.onrender.com/docs
+```
+
+Health check:
+
+```text
+https://titanic-api-eqep.onrender.com/health
+```
+
+> Note: if the service is running on a free cloud instance, it may need time to wake up after inactivity.
+
+---
+
+## Tech Stack
+
+| Area | Tools |
+|---|---|
+| Language | Python |
+| Backend | FastAPI |
+| Validation | Pydantic |
+| Machine Learning | scikit-learn |
+| Data Processing | pandas |
+| Model Storage | joblib / pickle |
+| Frontend | HTML, CSS, JavaScript |
+| Deployment | Docker, Render |
+| API Docs | Swagger / OpenAPI |
+
+---
+
+## Features
+
+- Predict Titanic passenger survival
+- Clean REST API endpoint
+- Interactive frontend form
+- Input validation with Pydantic
+- Health check endpoint
+- Request statistics endpoint
+- Dockerized application
+- Cloud-ready configuration
+- Swagger API documentation
+- Separate backend and frontend structure
+
+---
+
+## Prediction Inputs
+
+The model accepts the following passenger features:
+
+| Feature | Type | Example | Description |
+|---|---:|---|---|
+| `Age` | number | `25` | Passenger age |
+| `Fare` | number | `20.5` | Ticket fare |
+| `Embarked` | string | `"S"` | Embarkation port |
+| `Sex` | string | `"male"` | Passenger sex |
+| `Pclass` | integer | `3` | Passenger class |
+| `FamilySize` | integer | `1` | Number of family members |
+| `IsAlone` | boolean | `true` | Whether passenger travelled alone |
+
+Allowed values for `Embarked`:
+
+```text
+S - Southampton
+C - Cherbourg
+Q - Queenstown
+```
+
+Allowed values for `Sex`:
+
+```text
+male
+female
+```
+
+---
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/` | Web frontend |
+| `GET` | `/health` | Health check |
+| `GET` | `/stats` | Request counter |
+| `POST` | `/predict_model` | Run survival prediction |
+| `GET` | `/docs` | Swagger API documentation |
+
+---
+
+## Example API Request
+
+```json
+{
+  "Age": 25,
+  "Fare": 20,
+  "Embarked": "S",
+  "Sex": "male",
+  "Pclass": 3,
+  "FamilySize": 1,
+  "IsAlone": true
+}
+```
+
+---
+
+## Example API Response
+
+```json
+{
+  "Prediction": "Not survived",
+  "request_count": 1
+}
+```
+
+---
+
+## Application Architecture
+
+```text
+User
+│
+├── Web frontend
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+│
+├── FastAPI backend
+│   ├── main.py
+│   ├── routers/
+│   │   └── predict.py
+│   └── services/
+│       └── prediction_service.py
+│
+├── ML model
+│   └── random_forest_titanic.pkl
+│
+└── Data
+    └── titanic.csv
+```
+
+---
 
 ## Project Structure
 
@@ -16,17 +190,22 @@ The project includes:
 titanic_api/
 │
 ├── app/
-│   ├── __init__.py
-│   ├── main.py
-│   ├── schemas.py
+│   ├── frontend/
+│   │   ├── index.html
+│   │   ├── style.css
+│   │   └── script.js
 │   │
 │   ├── routers/
 │   │   ├── __init__.py
 │   │   └── predict.py
 │   │
-│   └── services/
-│       ├── __init__.py
-│       └── prediction_service.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── prediction_service.py
+│   │
+│   ├── __init__.py
+│   ├── main.py
+│   └── schemas.py
 │
 ├── data/
 │   └── titanic.csv
@@ -37,65 +216,90 @@ titanic_api/
 ├── notebooks/
 │   └── tests_&_train.ipynb
 │
-├── streamlit_app.py
-├── Dockerfile
 ├── .dockerignore
 ├── .gitignore
+├── Dockerfile
+├── README.md
 ├── requirements.txt
-└── README.md
+└── streamlit_app.py
 ```
 
-## Tech Stack
+---
 
-* Python
-* FastAPI
-* Streamlit
-* Scikit-learn
-* Pandas
-* Joblib
-* Uvicorn
-* Docker
+## Backend Design
 
-## How It Works
+The backend is separated into clear layers.
 
-The application follows this flow:
+### `app/main.py`
+
+Responsible for:
+
+- creating the FastAPI application
+- mounting the frontend
+- connecting API routers
+- exposing the health check endpoint
+
+### `app/routers/predict.py`
+
+Responsible for:
+
+- `/predict_model` endpoint
+- `/stats` endpoint
+- request/response handling
+
+### `app/services/prediction_service.py`
+
+Responsible for:
+
+- loading the trained model
+- preparing input data
+- running inference
+- returning prediction results
+
+### `app/schemas.py`
+
+Responsible for:
+
+- request validation
+- response structure
+- Pydantic models
+
+This structure keeps the project easier to maintain and closer to real backend application design.
+
+---
+
+## Model Inference Flow
 
 ```text
-User
- ↓
-Streamlit Web App
- ↓
-FastAPI
- ↓
-Prediction Service
- ↓
-Random Forest Model
- ↓
-Prediction
- ↓
-API Response
- ↓
-Streamlit Result
+User input
+↓
+Frontend form or API request
+↓
+FastAPI endpoint
+↓
+Pydantic validation
+↓
+Feature preparation
+↓
+Random Forest model inference
+↓
+Prediction result
+↓
+JSON response / frontend output
 ```
 
-The trained model is stored in:
+---
 
-```text
-models/random_forest_titanic.pkl
-```
+## Run Locally
 
-The API loads the model and uses it to make predictions from passenger data sent by the client.
-
-## Installation
-
-Clone the repository:
+### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/gimolaps/titanic_api.git
 cd titanic_api
 ```
 
-Create a virtual environment:
+### 2. Create virtual environment
 
 ```bash
 python -m venv .venv
@@ -103,142 +307,221 @@ python -m venv .venv
 
 Activate it on Windows:
 
-```powershell
-.venv\Scripts\Activate.ps1
+```bash
+.venv\Scripts\activate
 ```
 
-Install dependencies:
+Activate it on Linux/macOS:
+
+```bash
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Run FastAPI
-
-Start the backend from the project root:
+### 4. Run the application
 
 ```bash
-uvicorn app.main:app --reload --host 127.0.0.1 --port 5000
+uvicorn app.main:app --reload
 ```
 
-The API will be available at:
+Open the web app:
 
 ```text
-http://127.0.0.1:5000
+http://127.0.0.1:8000/
 ```
 
-Swagger documentation:
+Open Swagger docs:
 
 ```text
-http://127.0.0.1:5000/docs
+http://127.0.0.1:8000/docs
 ```
 
-## API Endpoints
-
-### Health Check
-
-```http
-GET /health
-```
-
-Example response:
-
-```json
-{
-  "status": "ok"
-}
-```
-
-### Prediction
-
-```http
-POST /predict_model
-```
-
-Sends passenger information to the trained model and returns a survival prediction.
-
-### Statistics
-
-```http
-GET /stats
-```
-
-Returns basic API usage statistics.
-
-## Run Streamlit
-
-Keep the FastAPI server running and open another terminal.
-
-Run:
-
-```bash
-streamlit run streamlit_app.py
-```
-
-The web interface will usually be available at:
-
-```text
-http://localhost:8501
-```
-
-The Streamlit application sends requests to the FastAPI backend and displays the model prediction.
+---
 
 ## Run with Docker
 
-Build the Docker image:
+### 1. Build Docker image
 
 ```bash
-docker build -t titanic-service .
+docker build -t titanic-api .
 ```
 
-Run the container:
+### 2. Run Docker container
 
 ```bash
-docker run -p 5000:5000 titanic-service
+docker run -p 8000:8000 -e PORT=8000 titanic-api
 ```
 
-Then open:
+Open:
 
 ```text
-http://localhost:5000/docs
+http://127.0.0.1:8000/
 ```
 
-## Machine Learning
+---
 
-The model was trained on the Titanic dataset as a binary classification task.
+## Docker Configuration
 
-Target:
+The project includes a Dockerfile for containerized deployment.
+
+The container:
+
+- uses Python 3.11
+- installs project dependencies
+- copies application files
+- exposes the FastAPI service
+- supports dynamic cloud port through the `PORT` environment variable
+
+Start command:
+
+```dockerfile
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+```
+
+This makes the project compatible with cloud platforms such as Render, Railway, AWS App Runner and similar services.
+
+---
+
+## Frontend
+
+The project includes a separate frontend interface located in:
 
 ```text
-Survived
+app/frontend/
 ```
 
-The model predicts one of two classes:
+The frontend provides:
+
+- passenger input form
+- dropdowns for categorical features
+- prediction button
+- loading state
+- prediction result block
+- links to API documentation and health check
+
+This makes the project usable without directly calling the API from Swagger or Postman.
+
+---
+
+## Example cURL Request
+
+```bash
+curl -X POST "http://127.0.0.1:8000/predict_model" \
+  -H "Content-Type: application/json" \
+  -d "{\"Age\":25,\"Fare\":20,\"Embarked\":\"S\",\"Sex\":\"male\",\"Pclass\":3,\"FamilySize\":1,\"IsAlone\":true}"
+```
+
+---
+
+## Cloud Deployment
+
+This project is prepared for cloud deployment with Docker.
+
+Current deployment target:
 
 ```text
-0 → Did not survive
-1 → Survived
+Render Web Service
 ```
 
-The training and experimentation process can be found in:
+General deployment flow:
 
 ```text
-notebooks/tests_&_train.ipynb
+GitHub repository
+↓
+Dockerfile
+↓
+Cloud build
+↓
+FastAPI app
+↓
+Public URL
 ```
 
-## Project Purpose
+The same containerized structure can also be adapted for:
 
-This is an educational project created to practice the complete ML application workflow:
+- AWS App Runner
+- AWS ECS / Fargate
+- Railway
+- Google Cloud Run
+- Azure Container Apps
 
-```text
-Dataset
-→ Data preprocessing
-→ Model training
-→ Model evaluation
-→ Model serialization
-→ FastAPI inference service
-→ Web interface
-→ Docker containerization
-```
+---
 
-The main goal is to demonstrate how a trained machine learning model can be integrated into a structured API service and exposed through a simple user interface.
+## Limitations
+
+This project is focused on demonstrating the engineering workflow of serving a machine learning model as an API.
+
+The prediction quality depends on:
+
+- dataset size
+- selected features
+- preprocessing quality
+- model choice
+- training strategy
+- class imbalance in the original data
+
+Possible improvements:
+
+- improve feature engineering
+- add cross-validation reports
+- compare multiple models
+- add model metrics to README
+- add automated tests
+- add GitHub Actions CI pipeline
+- add PostgreSQL prediction history
+- add request logging
+- add monitoring basics
+
+---
+
+## Current Status
+
+Implemented:
+
+- FastAPI backend
+- Random Forest model inference
+- Pydantic request validation
+- Web frontend
+- Docker setup
+- Render deployment
+- Health check endpoint
+- Request statistics endpoint
+- Swagger documentation
+
+Planned improvements:
+
+- Add `pytest` tests
+- Add GitHub Actions
+- Add model metrics section
+- Add screenshots
+- Add database for prediction history
+- Add logging
+
+---
+
+## Skills Demonstrated
+
+This project demonstrates practical AI engineering and backend development skills:
+
+- serving a trained ML model through an API
+- building REST endpoints with FastAPI
+- using Pydantic for input validation
+- structuring a Python backend application
+- separating frontend, routing and service logic
+- using Docker for reproducible deployment
+- preparing an ML service for cloud deployment
+- working with model artifacts
+- exposing a usable web interface for inference
+
+---
+
+## Author
+
+**Vladyslav Petrov**
+
+GitHub: [gimolaps](https://github.com/gimolaps)
